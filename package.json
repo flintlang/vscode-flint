@@ -18,9 +18,6 @@
 		"Programming Languages",
 		"Snippets"
 	],
-	"activationEvents": [
-		"onLanguage:flint"
-	],
 	"keywords": [
 		"flint",
 		"swift",
@@ -44,7 +41,10 @@
 		"languages": [
 			{
 				"id": "flint",
-				"aliases": ["Flint", "flint"],
+				"aliases": [
+					"Flint",
+					"flint"
+				],
 				"extension": [
 					".flint"
 				]
@@ -90,6 +90,9 @@
 			}
 		}
 	},
+	"activationEvents": [
+		"onLanguage:flint"
+	],
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
 		"compile": "tsc -watch -p ./",

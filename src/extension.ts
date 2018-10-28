@@ -12,7 +12,7 @@ import * as unzip from 'unzip-stream';
 import { window, languages, workspace, commands, Uri, Range, Disposable, ExtensionContext, TextDocument, CancellationToken, DocumentLink, extensions } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
-let languageServerId = 'swift';
+let languageServerId = 'flint';
 let extensionPath = '';
 
 // The version of the language server known to work with this extension.
@@ -29,7 +29,7 @@ function registerSwiftBugLinkProvider(context: ExtensionContext) {
 	// Provides easy access to Swift bugs.
 	// example:
 	// SwiftBug(SR-2688)
-	let disposableSwiftBugLinkProvider = languages.registerDocumentLinkProvider('swift', {
+	let disposableSwiftBugLinkProvider = languages.registerDocumentLinkProvider('flint', {
 		provideDocumentLinks: function(document: TextDocument, token: CancellationToken): DocumentLink[] {
 			let links: DocumentLink[] = [];
 			let re = /(SwiftBug\((SR-\d+)\))/g;
@@ -66,14 +66,14 @@ function registerSwiftLanguageServer(context: ExtensionContext) {
 			}
 			
 			let clientOptions: LanguageClientOptions = {
-				documentSelector: ['swift'],
+				documentSelector: ['flint'],
 				synchronize: {
 					configurationSection: languageServerId,
-					fileEvents: workspace.createFileSystemWatcher('**/.swift'),
+					fileEvents: workspace.createFileSystemWatcher('**/.flint'),
 				}
 			}
 			
-			let swiftLanguageServer = new LanguageClient(languageServerId, 'Swift Language Server', serverOptions, clientOptions);
+			let swiftLanguageServer = new LanguageClient(languageServerId, 'Flint Language Server', serverOptions, clientOptions);
 			context.subscriptions.push(swiftLanguageServer.start());
 		}
 		else {
@@ -88,7 +88,7 @@ function registerSwiftLanguageServer(context: ExtensionContext) {
 			}
 
 			let tmpAssetsPath = path.join(tmpPath, 'assets.zip');
-			let channel = window.createOutputChannel("Swift");
+			let channel = window.createOutputChannel("Flint");
 			channel.appendLine('Downloading Language Server assets from ' + languageServerAssetsUrl);
 			channel.show();
 
@@ -123,7 +123,7 @@ export function activate(context: ExtensionContext) {
 	extensionPath = context.extensionPath;
 	let config = workspace.getConfiguration(languageServerId);
 
-	let enableBugLinks = config.get('enableSwiftBugLinks', true);
+	let enableBugLinks = config.get('enableFlintBugLinks', true);
 	if (enableBugLinks) { registerSwiftBugLinkProvider(context); }
 
 	let enableLanguageServer = config.get('enableLanguageServer', true);
