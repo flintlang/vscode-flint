@@ -45,7 +45,7 @@
 					"Flint",
 					"flint"
 				],
-				"extension": [
+				"extensions": [
 					".flint"
 				]
 			}
