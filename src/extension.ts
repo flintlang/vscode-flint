@@ -25,31 +25,6 @@ function normalize(path: string): string {
 	return path
 }
 
-function registerSwiftBugLinkProvider(context: ExtensionContext) {
-	// Provides easy access to Swift bugs.
-	// example:
-	// SwiftBug(SR-2688)
-	let disposableSwiftBugLinkProvider = languages.registerDocumentLinkProvider('flint', {
-		provideDocumentLinks: function(document: TextDocument, token: CancellationToken): DocumentLink[] {
-			let links: DocumentLink[] = [];
-			let re = /(SwiftBug\((SR-\d+)\))/g;
-			let documentText = document.getText();
-			
-			var match
-			while ((match = re.exec(documentText)) != null) {
-				let pos = document.positionAt(match.index);
-				let range = new Range(pos, pos.translate(0, match[0].length + 1));
-				if (match[1]) {
-					let uri = Uri.parse('https://bugs.swift.org/browse/' + match[2]);
-					links.push(new DocumentLink(range, uri));
-				}
-			}
-			return links;
-		}
-	});
-	context.subscriptions.push(disposableSwiftBugLinkProvider);
-}
-
 // Launches the Swift Language Server tool.
 function registerSwiftLanguageServer(context: ExtensionContext) {
 	let config = workspace.getConfiguration(languageServerId);
@@ -66,7 +41,7 @@ function registerSwiftLanguageServer(context: ExtensionContext) {
 			}
 			
 			let clientOptions: LanguageClientOptions = {
-				documentSelector: ['flint'],
+				documentSelector: [{ scheme: 'file', language: 'flint' }],
 				synchronize: {
 					configurationSection: languageServerId,
 					fileEvents: workspace.createFileSystemWatcher('**/.flint'),
@@ -113,7 +88,6 @@ function registerSwiftLanguageServer(context: ExtensionContext) {
 							});
 				})
 				.on('error', function () {
-					window.showErrorMessage('There was an error downloading the language server from: ' + languageServerAssetsUrl);
 				});
 		}
 	});
@@ -122,10 +96,6 @@ function registerSwiftLanguageServer(context: ExtensionContext) {
 export function activate(context: ExtensionContext) {
 	extensionPath = context.extensionPath;
 	let config = workspace.getConfiguration(languageServerId);
-
-	let enableBugLinks = config.get('enableFlintBugLinks', true);
-	if (enableBugLinks) { registerSwiftBugLinkProvider(context); }
-
 	let enableLanguageServer = config.get('enableLanguageServer', true);
 	if (enableLanguageServer) { registerSwiftLanguageServer(context); }
 }
