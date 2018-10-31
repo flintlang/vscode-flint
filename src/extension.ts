@@ -4,19 +4,13 @@
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 
-import * as path from 'path';
 import * as fs from 'fs';
-import * as request from 'request';
-import * as unzip from 'unzip-stream';
 
 import { window, languages, workspace, commands, Uri, Range, Disposable, ExtensionContext, TextDocument, CancellationToken, DocumentLink, extensions } from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 let languageServerId = 'flint';
 let extensionPath = '';
-
-// The version of the language server known to work with this extension.
-let languageServerAssetsUrl = "https://github.com/owensd/swift-langsrv/releases/download/v0.16.1/langsrv-macos-v0.16.1.zip"
 
 function normalize(path: string): string {
 	if (path.charAt(0) != '/') {
@@ -52,43 +46,7 @@ function registerSwiftLanguageServer(context: ExtensionContext) {
 			context.subscriptions.push(swiftLanguageServer.start());
 		}
 		else {
-			// download the language server
-			let tmpPath = normalize('tmp');
-			let libPath = normalize(path.join('lib', 'usr', 'bin'));
-			if (!fs.existsSync(tmpPath)) { fs.mkdirSync(tmpPath); }
-			if (!fs.existsSync(libPath)) {
-				fs.mkdirSync(normalize('lib'));
-				fs.mkdirSync(normalize(path.join('lib', 'usr')));
-				fs.mkdirSync(libPath);
-			}
-
-			let tmpAssetsPath = path.join(tmpPath, 'assets.zip');
-			let channel = window.createOutputChannel("Flint");
-			channel.appendLine('Downloading Language Server assets from ' + languageServerAssetsUrl);
-			channel.show();
-
-			request(languageServerAssetsUrl)
-				.pipe(fs.createWriteStream(tmpAssetsPath))
-				.on('close', function () {
-					channel.appendLine('Assets downloaded to: ' + tmpAssetsPath);
-					channel.appendLine('Extracting assets to ' + libPath);
-
-					fs.createReadStream(tmpAssetsPath)
-						.pipe(unzip.Extract({path: libPath}))
-							.on('close', function () {
-								fs.chmod(path.join(libPath, 'langsrv'), "755");
-								window.showInformationMessage('You will need to reload the window to load the language server.', 'Reload Window')
-									.then(function (value) {
-										commands.executeCommand('workbench.action.reloadWindow');
-									});				
-							})
-							.on('error', function (e) {
-								channel.appendLine('Error: ' + e);
-								window.showErrorMessage('There was an error unpacking the language server assets from: ' + tmpAssetsPath);
-							});
-				})
-				.on('error', function () {
-				});
+			window.showErrorMessage("Unable to find the langsrc executable");
 		}
 	});
 }
