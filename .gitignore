@@ -4,3 +4,4 @@
 *.vsix
 lib/**
 tmp/**
+usr/**
