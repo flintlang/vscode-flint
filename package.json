@@ -12,7 +12,7 @@
 		"url": "https://github.com/flintrocks/vscode-flint"
 	},
 	"engines": {
-		"vscode": "^1.8.0"
+		"vscode": "^1.30.1"
 	},
 	"categories": [
 		"Programming Languages",
@@ -103,10 +103,10 @@
 		"@types/mocha": "^2.2.33",
 		"@types/node": "^6.0.52",
 		"typescript": "^2.1.5",
-		"vscode": "^1.0.3"
+		"vscode": "^1.1.26"
 	},
 	"dependencies": {
-		"vscode-languageclient": "^3.1.0",
+		"vscode-languageclient": "^5.2.1",
 		"unzip-stream": "^0.3.0",
 		"request": "^2.81.0"
 	}
